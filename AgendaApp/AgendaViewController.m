@@ -11,7 +11,7 @@
 #import "Contact.h"
 #import "ContactCell.h"
 #import "AgendaDetailViewController.h"
-#import "AFNetworking.h"
+#import "AFNetworking/AFNetworking.h"
 
 NSString *kContactAdded = @"kContactAdded";
 NSString *kContactEdited = @"kContactEdited";
@@ -49,12 +49,12 @@ NSString *kContactEdited = @"kContactEdited";
         
         NSError *error = nil;
         if(error == nil)
-            _contacts [Contact contactsFromJson:[NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error]];
+            _contacts = [Contact contactsFromJson:[NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error]];
         
-        NSLog(@"@", _contacts);
+        NSLog(@"%@", _contacts);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"contacts received");
+        NSLog(@"contacts error");
     }];
 }
 

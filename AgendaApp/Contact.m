@@ -7,10 +7,11 @@
 //
 
 #import "Contact.h"
+#import "Phone.h"
 
 @implementation Contact
 
-+ (NSArray *) contactsFromJson:(NSArray *)json
++ (NSMutableArray *) contactsFromJson:(NSArray *)json
 {
     NSMutableArray *contacts = [[NSMutableArray alloc] init];
     for(NSDictionary *contactDict in json){
@@ -27,7 +28,7 @@
     
     NSMutableArray *phones = [[NSMutableArray alloc] init];
     for(NSDictionary *phoneDict in [json objectForKey:@"phones"]){
-        [phones addObject:[Phone phoneFromJson:phoneDict];
+        [phones addObject:[Phone phoneFromJson:phoneDict]];
     }
     contact.phoneNumbers = phones;
     return contact;

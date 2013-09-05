@@ -10,6 +10,7 @@
 #import "NewContactViewController.h"
 #import "Phone.h"
 #import "PhoneCell.h"
+#import "AgendaViewController.h"
 
 @interface NewContactViewController ()
 
@@ -59,14 +60,33 @@
     [contact setObject:phonesJson forKey:@"phones"];
     
     NSError *error;
-    NSData * data = [NSJSONSerialization dataWithJSONObject:phonesJson options:nil error:&error];
+    NSData * data = [NSJSONSerialization dataWithJSONObject:phonesJson options:0 error:&error];
     NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
-    [[AppDelegate sharedClient] postPath:@"/contact" parameters:@{@"contact": jsonString} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"post success");
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"post error");
-    }];
+    if(_contact == nil){
+        [[AppDelegate sharedClient] postPath:@"/contact/" parameters:@{@"contact": jsonString} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kContactAdded object:nil userInfo:nil];
+            [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Contact added!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"post error");
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not create contact" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        }];
+    }else{
+        [[AppDelegate sharedClient] postPath:[NSString stringWithFormat:@"/contact/%@", _contact.contactId] parameters:@{@"contact": jsonString} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSError* error = nil;
+            Contact* newContact = [Contact contactFromJson:[NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error]];
+            
+            _contact.name = newContact.name;
+            _contact.phoneNumbers = newContact.phoneNumbers;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kContactEdited object:nil];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"failed");
+        }];
+    }
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

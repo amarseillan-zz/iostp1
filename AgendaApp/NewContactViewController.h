@@ -8,12 +8,14 @@
 
 #import "ViewController.h"
 #import "Phone.h"
+#import "Contact.h"
 
 @interface NewContactViewController : ViewController <UITableViewDelegate, UITableViewDataSource>
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)done:(id)sender;
 
+@property (strong, nonatomic) Contact* contact;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITableView *phonesTableView;
 

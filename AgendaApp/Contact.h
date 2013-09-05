@@ -14,7 +14,8 @@
 @property (nonatomic, strong) NSString* name;
 @property (nonatomic, strong) NSMutableArray* phoneNumbers;
 
-+ (NSArray *) contactsFromJson:(NSArray *)json;
++ (NSMutableArray *) contactsFromJson:(NSArray *)json;
++ (NSMutableArray *) contactFromJson:(NSArray *)json;
 
 - (id) init:(NSString*)name withPhones:(NSMutableArray*)phoneNumbers;
 
